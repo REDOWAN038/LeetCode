@@ -1,0 +1,19 @@
+class Solution {
+public:
+    int minSwaps(vector<int>& nums) {
+        int l=0,r=0,n=nums.size(),maxx=0,curr=0;
+        int ones = count(nums.begin(),nums.end(),1);
+
+        while(r<(2*n)){
+            curr+=nums[r%n];
+            if(r-l+1>ones){
+                curr-=nums[l%n];
+                l++;
+            }
+            maxx = max(maxx,curr);
+            r++;
+        }
+
+        return ones-maxx;
+    }
+};
