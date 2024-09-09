@@ -1,43 +1,36 @@
 class Solution {
 public:
     string removeKdigits(string num, int k) {
-        int n=num.size();
-        if(k==n)return "0";
+        stack<char>st;
 
-        string result = "";
-        result.push_back(num[0]);
+        for(int i=0;i<num.size();i++){
+            char v = num[i];
 
-        int i=1; 
-        while(i<n){
-            char ch = num[i];
-            if(ch >= result.back())result.push_back(ch);
-            else{
-                while(!result.empty() && result.back() > ch && k != 0){
-                result.pop_back();
-                k--;
-                }
-                result.push_back(ch);
-            }
-            i++;    
-        }
-        if(k != 0){
-
-            while(!result.empty() && k--){
-                result.pop_back();
+            while(!st.empty() && k && st.top()>v){
+                st.pop();
+                k-=1;
             }
 
+            st.push(v);
         }
 
-        i=0;
-        while(i<result.size() && result[i] == '0')i++;
-
-        if(i>= result.size())return "0";
-        
-        string ans = "";
-        while(i<result.size()){
-            ans.push_back(result[i]);
-            i++;
+        while(!st.empty() && k){
+            st.pop();
+            k-=1;
         }
-        return ans;
+
+        string res="";
+
+        while(!st.empty()){
+            res+=(st.top());
+            st.pop();
+        }
+
+        reverse(res.begin(),res.end());
+
+        size_t pos = res.find_first_not_of('0');
+        res = (pos == std::string::npos) ? "0" : res.substr(pos);
+
+        return res;
     }
 };
