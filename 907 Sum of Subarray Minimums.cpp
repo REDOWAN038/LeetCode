@@ -1,39 +1,43 @@
 class Solution {
 public:
     int sumSubarrayMins(vector<int>& arr) {
-        int sum = 0;
-        int mod = 1e9+7;
         int n = arr.size();
-
-        vector<int>v1(n),v2(n);
-        stack<int>s1,s2;
-
-        for(int i=0;i<n;i++){
-            v1[i] = n-i-1;
-            v2[i] = i;
-        }
+        int mod = 1e9+7;
+        vector<int>v1(n,-1),v2(n,n);
+        stack<int>st;
 
         for(int i=0;i<n;i++){
-            while(!s1.empty() && arr[s1.top()]>arr[i]){
-                v1[s1.top()] = i-s1.top()-1;
-                s1.pop();
+            while(!st.empty() && arr[st.top()]>=arr[i]){
+                st.pop();
             }
-            s1.push(i);
+
+            if(!st.empty()){
+                v1[i] = st.top();
+            }
+
+            st.push(i);
         }
+
+        st = stack<int>();
 
         for(int i=n-1;i>=0;i--){
-            while(!s2.empty() && arr[s2.top()]>=arr[i]){
-                v2[s2.top()] = s2.top()-i-1;
-                s2.pop();
+            while(!st.empty() && arr[st.top()]>arr[i]){
+                st.pop();
             }
-            s2.push(i);
+
+            if(!st.empty()){
+                v2[i] = st.top();
+            }
+
+            st.push(i);
         }
 
+        int sum = 0;
+
         for(int i=0;i<n;i++){
-            long long cnt = (v1[i]+1)*(v2[i]+1);
-            long long temp = (arr[i]*cnt)%mod;
-            sum+=temp;
-            sum%=mod;
+            long long p = (i-v1[i])*(v2[i]-i);
+            long long q = (p*arr[i])%mod;
+            sum = (sum+q)%mod;
         }
 
         return sum;
